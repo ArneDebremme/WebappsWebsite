@@ -59,7 +59,7 @@ function($stateProvider, $urlRouterProvider) {
 app.factory('auth', ['$http', '$window',
 function($http, $window) {
 	var auth = {};
-
+	var user;
 	auth.saveToken = function(token) {
 		$window.localStorage['flapper-news-token'] = token;
 	};
@@ -105,6 +105,13 @@ function($http, $window) {
 		$window.localStorage.removeItem('flapper-news-token');
 	};
 
+	auth.getUser = function(usr){
+		return $http.post('/user',usr).success(function(data){
+			console.log("HIER IS DE DATA " + data )
+			user = data;
+		});
+	};
+
 	return auth;
 }]);
 
@@ -125,8 +132,9 @@ function($http, auth) {
 	//when $http gets a success back, it adds this post to the posts object in
 	//this local factory, so the mongodb and angular data is the same
 	o.create = function(post) {
-		console.log(post.user+" voor de zekerheid"); //test komt er uit
+		console.log(post.user+": in create fun");
 	  return $http.post('/posts', post, {
+
 	    headers: {Authorization: 'Bearer '+auth.getToken()}
 	  }).success(function(data){
 	    o.posts.push(data);
@@ -190,7 +198,7 @@ app.controller('MainCtrl', ['$scope', 'posts', 'auth',
 function($scope, posts, auth) {
 	$scope.posts = posts.posts;
 	$scope.isLoggedIn = auth.isLoggedIn;
-	$scope.user = auth.currentUser;
+	$scope.lal = auth.user;
 
 	//setting title to blank here to prevent empty posts
 	$scope.title = '';
@@ -199,11 +207,13 @@ function($scope, posts, auth) {
 		if ($scope.title === '') {
 			return;
 		}
-		console.log($scope.username+"    <- username");
+		console.log(auth.currentUser());
+		var user =auth.getUser(auth.currentUser());
+		console.log(user);
 		posts.create({
 			title : $scope.title,
 			link : $scope.link,
-			user : $scope.userName
+			user : auth.currentUser()
 		});
 		//clear the values
 		$scope.title = '';

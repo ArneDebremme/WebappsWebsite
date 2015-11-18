@@ -149,5 +149,23 @@ console.log('calling passport)');
     }
   })(req, res, next);
 });
+router.post('/user', function(req,res, next){
+  if(!req.body.username){
+    return res.status(400).json({message: 'Geen username'});
+  }
 
+  var user = {};
+
+  User.find({ 'username': req.body.username}, function(err, foundUser){
+    if(err)
+      return next(err);
+
+    if (foundUser) // check the value returned for undefined
+    {
+      user = foundUser;
+    }
+    res.json(user);
+  });
+
+});
 module.exports = router;
