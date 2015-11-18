@@ -1,4 +1,4 @@
-var app = angular.module('flapperNews', ['ui.router','ngMaterial']);
+var app = angular.module('flapperNews', ['ui.router','ngMaterial']);//externe modules als dependency zetten
 
 app.config(['$stateProvider', '$urlRouterProvider',
 function($stateProvider, $urlRouterProvider) {
@@ -18,7 +18,7 @@ function($stateProvider, $urlRouterProvider) {
 		url : '/posts/:id',
 		templateUrl : '/posts.html',
 		controller : 'PostsCtrl',
-		resolve : {
+		resolve : {//-> /posts/id mogelijk lijn 63 index.ejs
 			post : ['$stateParams', 'posts',
 			function($stateParams, posts) {
 				return posts.get($stateParams.id);
@@ -47,6 +47,10 @@ function($stateProvider, $urlRouterProvider) {
 			}
 		}]
 
+	}).state('userPosts',{
+		url:"/userPosts",
+		templateUrl:'/userPosts.html',
+		controller : 'UserPostsCtrl',
 	});
 
 	$urlRouterProvider.otherwise('home');
@@ -112,15 +116,16 @@ function($http, auth) {
 
 	o.getAll = function() {
 		return $http.get('/posts').success(function(data) {
-			angular.copy(data, o.posts);
+			console.log(data);
+			angular.copy(data, o.posts);// maakt deepcopy zodat ui refresht
 		});
 	};
 	//now we'll need to create new posts
 	//uses the router.post in index.js to post a new Post mongoose model to mongodb
 	//when $http gets a success back, it adds this post to the posts object in
 	//this local factory, so the mongodb and angular data is the same
-	//sweet!
 	o.create = function(post) {
+		console.log(post.user+" voor de zekerheid"); //test komt er uit
 	  return $http.post('/posts', post, {
 	    headers: {Authorization: 'Bearer '+auth.getToken()}
 	  }).success(function(data){
@@ -185,6 +190,8 @@ app.controller('MainCtrl', ['$scope', 'posts', 'auth',
 function($scope, posts, auth) {
 	$scope.posts = posts.posts;
 	$scope.isLoggedIn = auth.isLoggedIn;
+	$scope.user = auth.currentUser;
+
 	//setting title to blank here to prevent empty posts
 	$scope.title = '';
 
@@ -192,9 +199,11 @@ function($scope, posts, auth) {
 		if ($scope.title === '') {
 			return;
 		}
+		console.log($scope.username+"    <- username");
 		posts.create({
 			title : $scope.title,
 			link : $scope.link,
+			user : $scope.userName
 		});
 		//clear the values
 		$scope.title = '';
@@ -259,7 +268,8 @@ function($scope, $state, auth) {
 		});
 	};
 }]);
-
+app.controller('UserPostsCtrl',['$scope','$state','auth',function($scope,auth,$state){
+}]);
 app.controller('NavCtrl', ['$scope', 'auth',
 function($scope, auth) {
 	$scope.isLoggedIn = auth.isLoggedIn;

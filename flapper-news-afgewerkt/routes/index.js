@@ -21,15 +21,14 @@ router.get('/posts', function(req, res, next) {
     if(err){ 
       return next(err);
     }
-
     res.json(posts);
   });
 });
 
 router.post('/posts', auth, function(req, res, next) {
   var post = new Post(req.body);
+  post.upvotes = 1;
   post.author = req.payload.username;
-
   post.save(function(err, post){
     if(err){ return next(err); }
 
@@ -39,7 +38,6 @@ router.post('/posts', auth, function(req, res, next) {
 
 router.param('post', function(req, res, next, id) {
   var query = Post.findById(id);
-
   query.exec(function (err, post){
     if (err) { return next(err); }
     if (!post) { return next(new Error("can't find post")); }
@@ -63,6 +61,7 @@ router.param('comment', function(req, res, next, id) {
 
 router.get('/posts/:post', function(req, res, next) {
   req.post.populate('comments', function(err, post) {
+
     res.json(post);
   });
 });
