@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 
 // connect MongoDB
-mongoose.connect('mongodb://localhost/news', function(err,db){
+mongoose.connect('mongodb://localhost/news2', function(err,db){
     if (!err){
         console.log('Connected to /news!');
     } else{

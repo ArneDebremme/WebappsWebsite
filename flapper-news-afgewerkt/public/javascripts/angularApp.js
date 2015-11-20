@@ -47,12 +47,7 @@ function($stateProvider, $urlRouterProvider) {
 			}
 		}]
 
-	}).state('userPosts',{
-		url:"/userPosts",
-		templateUrl:'/userPosts.html',
-		controller : 'UserPostsCtrl',
-	});
-
+	})
 	$urlRouterProvider.otherwise('home');
 }]);
 
@@ -202,7 +197,7 @@ function($scope, posts, auth) {
 
 	//setting title to blank here to prevent empty posts
 	$scope.title = '';
-
+	$scope.description = '';
 	$scope.addPost = function() {
 		if ($scope.title === '') {
 			return;
@@ -212,6 +207,7 @@ function($scope, posts, auth) {
 		console.log(user);
 		posts.create({
 			title : $scope.title,
+			description : $scope.description,
 			link : $scope.link,
 			user : auth.currentUser()
 		});
@@ -235,6 +231,7 @@ app.controller('PostsCtrl', ['$scope', 'posts', 'post', 'auth',
 function($scope, posts, post, auth) {
 	$scope.post = post;
 	$scope.isLoggedIn = auth.isLoggedIn;
+
 
 	$scope.addComment = function() {
 		if ($scope.body === '') {

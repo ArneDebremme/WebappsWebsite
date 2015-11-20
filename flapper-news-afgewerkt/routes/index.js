@@ -98,7 +98,6 @@ router.post('/posts/:post/comments', auth, function(req, res, next) {
     });
   });
 });
-
 router.put('/posts/:post/comments/:comment/upvote', auth, function(req, res, next) {
   req.comment.upvote(function(err, comment){
     if (err) { return next(err); }

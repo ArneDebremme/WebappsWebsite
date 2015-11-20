@@ -4,7 +4,7 @@
   <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
-
+  <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
   
   <style> .glyphicon-thumbs-up { cursor:pointer } </style>
 
@@ -55,7 +55,7 @@
           {{post.title}}
         </span>
 		<span ng-show="post.user">
-		  posted by <a>{{post.user}}</a> |
+		  <span class="mintext"> posted by {{post.user}}</span>
 		</span>      
 	 </span>
       <span>
@@ -74,6 +74,10 @@
       <div class="form-group">
         <input type="text" class="form-control" placeholder="Link" ng-model="link">
       </div>
+      <div class="form-group">
+        <textarea class="form-control" placeholder="your content" ng-model="description">
+        </textarea>
+      </div>
       <button type="submit" class="btn btn-primary">Post</button>
     </form>
 	<div ng-hide="isLoggedIn()">
@@ -83,14 +87,23 @@
 
   <script type="text/ng-template" id="/posts.html">
     <div class="page-header">
-      <h3>
-        <a ng-show="post.link" href="{{post.link}}">
-          {{post.title}}
-        </a>
+      <md-toolbar class="md-warn">
+        <div class="md-toolbar-tools">
+          <div class="content">
+          <h2 class="md-flex"><a ng-show="post.link" href="{{post.link}}">
+              {{post.title}} <span class="mintext"> posted by {{post.user}}</span>
+            </a>
         <span ng-hide="post.link">
-          {{post.title}}
+          {{post.title}} <span class="mintext"> posted by {{post.user}}</span>
+          </a>
         </span>
-      </h3>
+          </h2></div>
+        </div>
+      </md-toolbar>
+      <md-content flex layout-padding>
+      <p ng-show ="post.description">{{post.description}}
+      </p>
+        </md-content>
     </div>
 
     <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
