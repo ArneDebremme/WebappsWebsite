@@ -1,4 +1,4 @@
-var app = angular.module('flapperNews','sliderApp' ,['ui.router','ngMaterial','ngAnimate']);//externe modules als dependency zetten
+var app = angular.module('flapperNews', ['ui.router','ngMaterial','ngAnimate']);//externe modules als dependency zetten
 
 app.config(['$stateProvider', '$urlRouterProvider',
 function($stateProvider, $urlRouterProvider) {
@@ -96,7 +96,7 @@ app.directive('slider', function ($timeout) {
 			/* End : For Automatic slideshow*/
 
 		},
-		templateUrl:'templates/templateurl.html'
+		templateUrl:'/templates/templateurl.html'
 	}
 });
 
@@ -164,10 +164,8 @@ function($http, auth) {
 	var o = {
 		posts : []
 	};
-
 	o.getAll = function() {
 		return $http.get('/posts').success(function(data) {
-			console.log(data);
 			angular.copy(data, o.posts);// maakt deepcopy zodat ui refresht
 		});
 	};
