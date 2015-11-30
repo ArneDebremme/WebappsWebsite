@@ -5,13 +5,13 @@
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
   <link rel="stylesheet" href="/stylesheets/style.css" type="text/css">
-  
+
   <style> .glyphicon-thumbs-up { cursor:pointer } </style>
 
   <meta name="viewport" content="initial-scale=1" />
 </head>
 <body layout="column" ng-controller="AppCtrl">
- 
+
 
   <md-toolbar layout="row">
     <div class="md-toolbar-tools">
@@ -56,7 +56,7 @@
         </span>
 		<span ng-show="post.user">
 		  <span class="mintext"> posted by {{post.user}}</span>
-		</span>      
+		</span>
 	 </span>
       <span>
         <a href="#/posts/{{post._id}}">Comments</a>
@@ -83,10 +83,9 @@
 	<div ng-hide="isLoggedIn()">
 	  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
 	</div>
-    <h1>Slider Using AngularJS</h1>
+    <h1>ang directive test</h1>
     <slider images="images"/>
   </script>
-
   <script type="text/ng-template" id="/posts.html">
     <div class="page-header">
       <md-toolbar class="md-warn">
@@ -110,7 +109,7 @@
 
     <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
       <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(comment)"></span>
-        {{comment.upvotes}} 
+        {{comment.upvotes}}
       <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(comment)"></span>
         - by {{comment.author}}
       <span style="font-size:20px; margin-left:10px;">
@@ -147,15 +146,15 @@
 	  <div class="page-header">
 	    <h1>Flapper News</h1>
 	  </div>
-	
+
 	  <div ng-show="error" class="alert alert-danger row">
 	    <span>{{ error.message }}</span>
 	  </div>
-	
+
 	  <form ng-submit="register()"
 	    style="margin-top:30px;">
 	    <h3>Register</h3>
-	
+
 	    <div class="form-group">
 	      <input type="text"
 	      class="form-control"
@@ -175,15 +174,15 @@
 	  <div class="page-header">
 	    <h1>Flapper News</h1>
 	  </div>
-	
+
 	  <div ng-show="error" class="alert alert-danger row">
 	    <span>{{ error.message }}</span>
 	  </div>
-	
+
 	  <form ng-submit="logIn()"
 	    style="margin-top:30px;">
 	    <h3>Log In</h3>
-	
+
 	    <div class="form-group">
 	      <input type="text"
 	      class="form-control"

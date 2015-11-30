@@ -92,9 +92,6 @@ app.directive('slider', function ($timeout) {
 			scope.$on('$destroy',function(){
 				$timeout.cancel(timer);
 			});
-
-			/* End : For Automatic slideshow*/
-
 		},
 		templateUrl:'/templates/templateurl.html'
 	}
@@ -182,7 +179,7 @@ function($http, auth) {
 	    o.posts.push(data);
 	  });
 	};
-	
+
 	o.upvote = function(post) {
 	  return $http.put('/posts/' + post._id + '/upvote', null, {
 	    headers: {Authorization: 'Bearer '+auth.getToken()}
@@ -214,14 +211,14 @@ function($http, auth) {
 	    headers: {Authorization: 'Bearer '+auth.getToken()}
 	  });
 	};
-	
+
 	o.upvoteComment = function(post, comment) {
 	  return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
 	    headers: {Authorization: 'Bearer '+auth.getToken()}
 	  }).success(function(data){
 	    comment.upvotes += 1;
 	  });
-	};	
+	};
 	//downvote comments
 	//I should really consolidate these into one voteHandler function
 	o.downvoteComment = function(post, comment) {
@@ -230,7 +227,7 @@ function($http, auth) {
 	  }).success(function(data){
 	    comment.upvotes -= 1;
 	  });
-	};	
+	};
 	return o;
 }]);
 
@@ -335,6 +332,6 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', function($scope, $mdSidenav){
   $scope.toggleSidenav = function(menuId) {
     $mdSidenav(menuId).toggle();
   };
- 
+
 }]);
 
