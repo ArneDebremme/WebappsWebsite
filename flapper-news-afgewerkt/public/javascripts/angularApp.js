@@ -5,7 +5,7 @@ function($stateProvider, $urlRouterProvider) {
 
 	$stateProvider.state('home', {
 		url : '/home',
-		templateUrl : '/home.html',
+		templateUrl : '/templates/home.html',
 		controller : 'MainCtrl',
 		resolve : {
 			postPromise : ['posts',
@@ -16,7 +16,7 @@ function($stateProvider, $urlRouterProvider) {
 		}
 	}).state('posts', {
 		url : '/posts/:id',
-		templateUrl : '/posts.html',
+		templateUrl : '/templates/posts.html',
 		controller : 'PostsCtrl',
 		resolve : {//-> /posts/id mogelijk lijn 63 index.ejs
 			post : ['$stateParams', 'posts',
@@ -27,7 +27,7 @@ function($stateProvider, $urlRouterProvider) {
 		}
 	}).state('login', {
 		url : '/login',
-		templateUrl : '/login.html',
+		templateUrl : '/templates/login.html',
 		controller : 'AuthCtrl',
 		onEnter : ['$state', 'auth',
 		function($state, auth) {
@@ -38,7 +38,7 @@ function($stateProvider, $urlRouterProvider) {
 
 	}).state('register', {
 		url : '/register',
-		templateUrl : '/register.html',
+		templateUrl : '/templates/register.html',
 		controller : 'AuthCtrl',
 		onEnter : ['$state', 'auth',
 		function($state, auth) {
@@ -50,53 +50,6 @@ function($stateProvider, $urlRouterProvider) {
 	})
 	$urlRouterProvider.otherwise('home');
 }]);
-app.directive('slider', function ($timeout) {
-	return {
-		restrict: 'AE',
-		replace: true,
-		scope:{
-			images: '='
-		},
-		link: function (scope, elem, attrs) {
-
-			scope.currentIndex=0;
-
-			scope.next=function(){
-				scope.currentIndex<scope.images.length-1?scope.currentIndex++:scope.currentIndex=0;
-			};
-
-			scope.prev=function(){
-				scope.currentIndex>0?scope.currentIndex--:scope.currentIndex=scope.images.length-1;
-			};
-
-			scope.$watch('currentIndex',function(){
-				scope.images.forEach(function(image){
-					image.visible=false;
-				});
-				scope.images[scope.currentIndex].visible=true;
-			});
-
-			/* Start: For Automatic slideshow*/
-
-			var timer;
-
-			var sliderFunc=function(){
-				timer=$timeout(function(){
-					scope.next();
-					timer=$timeout(sliderFunc,5000);
-				},5000);
-			};
-
-			sliderFunc();
-
-			scope.$on('$destroy',function(){
-				$timeout.cancel(timer);
-			});
-		},
-		templateUrl:'/templates/templateurl.html'
-	}
-});
-
 app.factory('auth', ['$http', '$window',
 function($http, $window) {
 	var auth = {};
@@ -230,108 +183,7 @@ function($http, auth) {
 	};
 	return o;
 }]);
-
-
-
-app.controller('MainCtrl', ['$scope', 'posts', 'auth',
-function($scope, posts, auth) {
-	$scope.posts = posts.posts;
-	$scope.isLoggedIn = auth.isLoggedIn;
-	$scope.lal = auth.user;
-	$scope.images=[{src:'img1.png',title:'Pic 1'},{src:'img2.jpg',title:'Pic 2'},{src:'img3.jpg',title:'Pic 3'},{src:'img4.png',title:'Pic 4'},{src:'img5.png',title:'Pic 5'}];
-	//setting title to blank here to prevent empty posts
-	$scope.title = '';
-	$scope.description = '';
-	$scope.addPost = function() {
-		if ($scope.title === '') {
-			return;
-		}
-		console.log(auth.currentUser());
-		var user =auth.getUser(auth.currentUser());
-		console.log(user);
-		posts.create({
-			title : $scope.title,
-			description : $scope.description,
-			link : $scope.link,
-			user : auth.currentUser()
-		});
-		//clear the values
-		$scope.title = '';
-		$scope.link = '';
-	};
-
-	$scope.upvote = function(post) {
-		//our post factory has an upvote() function in it
-		//we're just calling this using the post we have
-		console.log('Upvoting:' + post.title + "votes before:" + post.upvotes);
-		posts.upvote(post);
-	};
-	$scope.downvote = function(post) {
-		posts.downvote(post);
-	};
-}]);
-
-app.controller('PostsCtrl', ['$scope', 'posts', 'post', 'auth',
-function($scope, posts, post, auth) {
-	$scope.post = post;
-	$scope.isLoggedIn = auth.isLoggedIn;
-
-
-	$scope.addComment = function() {
-		if ($scope.body === '') {
-			return;
-		}
-		posts.addComment(post._id, {
-			body : $scope.body,
-			author : 'user'
-		}).success(function(comment) {
-			$scope.post.comments.push(comment);
-		});
-		$scope.body = '';
-	};
-	$scope.upvote = function(comment) {
-		posts.upvoteComment(post, comment);
-	};
-
-	$scope.downvote = function(comment) {
-		posts.downvoteComment(post, comment);
-	};
-
-}]);
-
-app.controller('AuthCtrl', ['$scope', '$state', 'auth',
-function($scope, $state, auth) {
-	$scope.user = {};
-
-	$scope.register = function() {
-		auth.register($scope.user).error(function(error) {
-			$scope.error = error;
-		}).then(function() {
-			$state.go('home');
-		});
-	};
-
-	$scope.logIn = function() {
-		auth.logIn($scope.user).error(function(error) {
-			$scope.error = error;
-		}).then(function() {
-			$state.go('home');
-		});
-	};
-}]);
 app.controller('UserPostsCtrl',['$scope','$state','auth',function($scope,auth,$state){
 }]);
-app.controller('NavCtrl', ['$scope', 'auth',
-function($scope, auth) {
-	$scope.isLoggedIn = auth.isLoggedIn;
-	$scope.currentUser = auth.currentUser;
-	$scope.logOut = auth.logOut;
-}]);
 
-app.controller('AppCtrl', ['$scope', '$mdSidenav', function($scope, $mdSidenav){
-  $scope.toggleSidenav = function(menuId) {
-    $mdSidenav(menuId).toggle();
-  };
-
-}]);
 
